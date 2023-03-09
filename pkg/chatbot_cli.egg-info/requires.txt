@@ -1,0 +1,6 @@
+openai
+tiktoken
+prompt_toolkit
+fire
+azure-cognitiveservices-speech
+dynaconf

@@ -1,0 +1,3 @@
+[console_scripts]
+chatGPT-voice = chatbot_cli:main
+

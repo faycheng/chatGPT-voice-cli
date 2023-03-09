@@ -1,0 +1,4 @@
+chatbot_cli
+chatgpt
+conf
+speech_recognition
