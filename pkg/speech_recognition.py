@@ -111,8 +111,10 @@ def synthesize_and_speak(q):
             import tempfile
             with tempfile.NamedTemporaryFile(suffix=".wav", delete=True) as f:
                 stream.save_to_wav_file(f.name)
-                from playsound import playsound
-                playsound(f.name)
+                import simpleaudio as sa
+                wave_obj = sa.WaveObject.from_wave_file(f.name)
+                play_obj = wave_obj.play()
+                play_obj.wait_done()
             idx += 1
 
     speaker = threading.Thread(target=speak)

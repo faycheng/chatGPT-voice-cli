@@ -10,7 +10,6 @@ from prompt_toolkit.keys import Keys
 
 from chatgpt import ChatBot
 from speech_recognition import get_recognizer
-from speech_recognition import get_synthesizer
 
 bot = ChatBot()
 
@@ -96,7 +95,6 @@ class AiBotFire(object):
         init()
 
         recognizer = get_recognizer()
-        synthesizer = get_synthesizer()
 
         def recognize_and_answer():
             data = []
@@ -122,65 +120,11 @@ class AiBotFire(object):
                 if press_enter is True:
                     break
             recognizer.stop_continuous_recognition()
-            print_queue = []
-            synthesize_queue = []
-            speak_queue = []
-            import threading
-            print_lock = threading.Lock()
-            synthesize_lock = threading.Lock()
-            speak_lock = threading.Lock()
 
-            def print_answer():
-                while True:
-                    with print_lock:
-                        for word in print_queue:
-                            sys.stdout.write(word)
-                            sys.stdout.flush()
-                        print_queue.clear()
-                    time.sleep(0.01)
+            AiBotFire.__ask_and_speak(" ".join(data))
 
-            def synthesize_answer():
-                while True:
-                    current = []
-                    speak = False
-                    with synthesize_lock:
-                        for word in synthesize_queue:
-                            current.append(word)
-                            if word.endswith(",") or word.endswith(".") or word.endswith("?"):
-                                speak = True
-                                break
-                        if len(current) > 0 and speak:
-                            synthesize_queue = synthesize_queue[len(current):]
-                    if current:
-                        with speak_lock:
-                            speak_queue.append(synthesizer.speak_text_async(" ".join(current)))
-                    time.sleep(0.01)
-
-            def speak_answer():
-                while True:
-                    with speak_lock:
-                        if not speak_queue:
-                            time.sleep(0.01)
-                            continue
-                        head = speak_queue[0]
-                        speak_queue.remove(head)
-                        head.get()
-
-            printer_thread = threading.Thread(target=print_answer)
-            synthesizer_thread = threading.Thread(target=synthesize_answer)
-            speaker_thread = threading.Thread(target=speak_answer)
-            printer_thread.start()
-            synthesizer_thread.start()
-            speaker_thread.start()
-            for word in bot.ask(" ".join(data)):
-                print_queue.append(word)
-                synthesize_queue.append(word)
-            printer_thread.join()
-            synthesizer_thread.join()
-            speaker_thread.join()
-
-        print("Speak into your microphone.")
         while True:
+            print("Speak into your microphone.")
             recognize_and_answer()
 
 
