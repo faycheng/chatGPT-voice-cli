@@ -94,12 +94,12 @@ class AiBotFire(object):
         from speech_recognition import init
         init()
 
-        recognizer = get_recognizer()
-
         def recognize_and_answer():
+            recognizer = get_recognizer()
             data = []
-            import sys
+
             def handle_final_result(evt):
+                print(evt.result.text)
                 data.append(evt.result.text)
                 sys.stdout.write(evt.result.text)
                 sys.stdout.flush()
@@ -120,8 +120,8 @@ class AiBotFire(object):
                 if press_enter is True:
                     break
             recognizer.stop_continuous_recognition()
-
             AiBotFire.__ask_and_speak(" ".join(data))
+            data.clear()
 
         while True:
             print("Speak into your microphone.")

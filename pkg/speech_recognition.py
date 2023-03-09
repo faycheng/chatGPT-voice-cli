@@ -12,9 +12,15 @@ class Recognizer:
 
     @staticmethod
     def get():
-        if Recognizer.__instance == None:
-            Recognizer()
-        return Recognizer.__instance
+        speech_config = speechsdk.SpeechConfig(subscription=settings.azure_key, region=settings.azure_region)
+        speech_config.speech_recognition_language = settings.language
+        audio_config = speechsdk.audio.AudioConfig(use_default_microphone=True)
+        speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
+        return speech_recognizer
+        # Recognizer.__instance = speech_recognizer
+        # if Recognizer.__instance == None:
+        #     Recognizer()
+        # return Recognizer.__instance
 
     def __init__(self):
         if Recognizer.__instance != None:
